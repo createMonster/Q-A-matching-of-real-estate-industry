@@ -151,7 +151,7 @@ if __name__ == '__main__':
     max_seq_len = 100
     hidden_size = 768
     n_class = 2
-    batch_size = 32
+    batch_size = 128
     lstm_hidden = 256
     num_layers = 2
     model_name = 'hfl/chinese-bert-wwm'
@@ -186,9 +186,9 @@ if __name__ == '__main__':
         {'params': [p for n, p in model.named_parameters() if not any(nd in n for nd in no_decay)], 'weight_decay': 0.01},
         {'params': [p for n, p in model.named_parameters() if any(nd in n for nd in no_decay)], 'weight_decay': 0.0}
     ]
-    optimizer = torch.optim.AdamW(optimizer_grouped_parameters, lr=3e-5)
+    optimizer = torch.optim.AdamW(optimizer_grouped_parameters, lr=8e-5)
     save_path = './bert_classifier.ckpt'
-    epochs = 5
+    epochs = 10
     min_loss = float('inf')
     f1_init = 0
     last_imporve = 0
