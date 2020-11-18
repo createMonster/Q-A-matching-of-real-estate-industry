@@ -188,7 +188,7 @@ if __name__ == '__main__':
     ]
     optimizer = torch.optim.AdamW(optimizer_grouped_parameters, lr=8e-5)
     save_path = './bert_classifier.ckpt'
-    epochs = 10
+    epochs = 3
     min_loss = float('inf')
     f1_init = 0
     last_imporve = 0
