@@ -14,7 +14,7 @@ import torch.nn.functional as F
 # from torch.utils.tensorboard import SummaryWriter
 # writer = SummaryWriter('runs/text_experiment')
 
-seed = 3
+seed = 2021
 torch.manual_seed(seed)
 torch.cuda.manual_seed(seed)
 
@@ -49,7 +49,7 @@ class Bert_Cnn(nn.Module):
 
 class Electra_Fc(nn.Module):
     def __init__(self, model_name, max_seq_len, hidden_size, n_class):
-        super(Bert_Fc, self).__init__()
+        super(Electra_Fc, self).__init__()
         self.bert = ElectraModel.from_pretrained(model_name, return_dict=True)
         self.maxpool = nn.MaxPool1d(max_seq_len)
         self.avgpool = nn.AvgPool1d(max_seq_len)
