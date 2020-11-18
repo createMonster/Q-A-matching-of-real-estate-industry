@@ -8,7 +8,7 @@ from torch.utils.data import Dataset, DataLoader
 from sklearn.model_selection import train_test_split
 from sklearn import metrics 
 from transformers import BertModel, AutoModel, BertForNextSentencePrediction, BertTokenizerFast, BertForQuestionAnswering
-from transformers import DistilBertTokenizerFast, DistilBertModel
+from transformers import DistilBertTokenizerFast, DistilBertModel, ElectraModel
 from transformers import RobertaTokenizer, RobertaModel, AutoTokenizer, AutoModelWithLMHead
 import torch.nn.functional as F
 # from torch.utils.tensorboard import SummaryWriter
@@ -47,10 +47,10 @@ class Bert_Cnn(nn.Module):
         outputs = self.linear(cnn_output)
         return outputs
 
-class Bert_Fc(nn.Module):
+class Electra_Fc(nn.Module):
     def __init__(self, model_name, max_seq_len, hidden_size, n_class):
         super(Bert_Fc, self).__init__()
-        self.bert = BertModel.from_pretrained(model_name, return_dict=True)
+        self.bert = ElectraModel.from_pretrained(model_name, return_dict=True)
         self.maxpool = nn.MaxPool1d(max_seq_len)
         self.avgpool = nn.AvgPool1d(max_seq_len)
         self.linear1 = nn.Linear(3 * hidden_size, hidden_size) 
@@ -151,7 +151,7 @@ if __name__ == '__main__':
     max_seq_len = 100
     hidden_size = 768
     n_class = 2
-    batch_size = 64
+    batch_size = 32
     lstm_hidden = 256
     num_layers = 2
     model_name = 'hfl/chinese-electra-base-discriminator'
@@ -164,7 +164,7 @@ if __name__ == '__main__':
 
     train_x, val_x, train_y, val_y = train_test_split(train_data[feature_cols], train_data[label_cols], test_size=0.2, random_state=seed)
 
-    tokenizer = BertTokenizerFast.from_pretrained(model_name)
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
     train_encodings = tokenizer(train_x['query'].tolist(), train_x['reply'].tolist(),truncation=True, padding=True, max_length=max_seq_len)
     val_encodings = tokenizer(val_x['query'].tolist(), val_x['reply'].tolist(), truncation=True, padding=True, max_length=max_seq_len)
     test_encodings = tokenizer(test_data['query'].tolist(), test_data['reply'].tolist(), truncation=True, padding=True, max_length=max_seq_len)
@@ -177,7 +177,7 @@ if __name__ == '__main__':
     val_iter = DataLoader(val_dataset, batch_size=batch_size, shuffle=True)
     test_iter = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
-    model = Bert_Fc(model_name, max_seq_len=max_seq_len, hidden_size=hidden_size, n_class=n_class)
+    model = Electra_Fc(model_name, max_seq_len=max_seq_len, hidden_size=hidden_size, n_class=n_class)
     model.to(device)
 
     loss_func = nn.CrossEntropyLoss()

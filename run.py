@@ -8,7 +8,7 @@ from torch.utils.data import Dataset, DataLoader
 from sklearn.model_selection import train_test_split
 from sklearn import metrics 
 from transformers import BertModel, AutoModel, BertForNextSentencePrediction, BertTokenizerFast, BertForQuestionAnswering
-from transformers import DistilBertTokenizerFast, DistilBertModel
+from transformers import DistilBertTokenizerFast, DistilBertModel, ElectraModel
 from transformers import RobertaTokenizer, RobertaModel, AutoTokenizer, AutoModelWithLMHead
 import torch.nn.functional as F
 # from torch.utils.tensorboard import SummaryWriter
