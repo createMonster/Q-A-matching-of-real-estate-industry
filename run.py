@@ -149,7 +149,7 @@ def test(model, test_iter):
     return np.array(res)
 if __name__ == '__main__':
     max_seq_len = 100
-    hidden_size = 768
+    hidden_size = 1024
     n_class = 2
     batch_size = 16
     lstm_hidden = 256
