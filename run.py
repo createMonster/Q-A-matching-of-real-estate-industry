@@ -151,10 +151,10 @@ if __name__ == '__main__':
     max_seq_len = 100
     hidden_size = 768
     n_class = 2
-    batch_size = 128
+    batch_size = 16
     lstm_hidden = 256
     num_layers = 2
-    model_name = 'hfl/chinese-bert-wwm'
+    model_name = 'hfl/chinese-roberta-wwm-ext-large'
 
     train_data = pd.read_csv('./data/train.csv')
     test_data = pd.read_csv('./data/test.csv')
