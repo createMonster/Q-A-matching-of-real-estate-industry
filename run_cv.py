@@ -146,9 +146,9 @@ if __name__ == '__main__':
     hidden_size = 768
     n_class = 2
     batch_size = 64
-    model_name = 'hfl/chinese-bert-wwm'
+    model_name = 'hfl/chinese-roberta-wwm-ext'
 
-    epochs = 10
+    epochs = 5
     lr = 2e-5
     min_loss = float('inf')
     last_imporve = 0
