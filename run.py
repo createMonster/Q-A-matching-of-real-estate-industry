@@ -151,11 +151,11 @@ if __name__ == '__main__':
     max_seq_len = 100
     hidden_size = 1024
     n_class = 2
-    batch_size = 16
+    batch_size = 32
     lstm_hidden = 256
     num_layers = 2
     model_name = 'hfl/chinese-roberta-wwm-ext-large'
-    lr = 2e-5
+    lr = 3e-5
 
     train_data = pd.read_csv('./data/train.csv')
     test_data = pd.read_csv('./data/test.csv')
@@ -189,13 +189,13 @@ if __name__ == '__main__':
     ]
     optimizer = torch.optim.AdamW(optimizer_grouped_parameters, lr=lr)
     save_path = './bert_classifier.ckpt'
-    epochs = 3
+    epochs = 5
     min_loss = float('inf')
     f1_init = 0
     last_imporve = 0
     total_batch = 0
     early_stop = 5
-    for epoch in range(1, epochs):
+    for epoch in range(1, epochs+1):
         print('[{}/{}]'.format(epoch, epochs))
         model = train(model, optimizer, loss_func, train_iter, epoch)
         val_loss, f1 = evalate(model, val_iter)
