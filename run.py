@@ -148,14 +148,14 @@ def test(model, test_iter):
             res += output
     return np.array(res)
 if __name__ == '__main__':
-    max_seq_len = 100
+    max_seq_len = 128
     hidden_size = 1024
     n_class = 2
-    batch_size = 32
+    batch_size = 48
     lstm_hidden = 256
     num_layers = 2
     model_name = 'hfl/chinese-roberta-wwm-ext-large'
-    lr = 3e-5
+    lr = 1e-5
 
     train_data = pd.read_csv('./data/train.csv')
     test_data = pd.read_csv('./data/test.csv')
