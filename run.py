@@ -155,7 +155,7 @@ if __name__ == '__main__':
     lstm_hidden = 256
     num_layers = 2
     model_name = 'hfl/chinese-roberta-wwm-ext-large'
-    lr = 3e-6
+    lr = 2e-5
 
     train_data = pd.read_csv('./data/train.csv')
     test_data = pd.read_csv('./data/test.csv')
