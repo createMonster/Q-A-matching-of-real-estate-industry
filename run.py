@@ -151,7 +151,7 @@ if __name__ == '__main__':
     max_seq_len = 128
     hidden_size = 1024
     n_class = 2
-    batch_size = 40
+    batch_size = 36
     lstm_hidden = 256
     num_layers = 2
     model_name = 'hfl/chinese-roberta-wwm-ext-large'
