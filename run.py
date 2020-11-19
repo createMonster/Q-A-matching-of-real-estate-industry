@@ -155,6 +155,7 @@ if __name__ == '__main__':
     lstm_hidden = 256
     num_layers = 2
     model_name = 'hfl/chinese-roberta-wwm-ext-large'
+    lr = 3e-6
 
     train_data = pd.read_csv('./data/train.csv')
     test_data = pd.read_csv('./data/test.csv')
@@ -186,7 +187,7 @@ if __name__ == '__main__':
         {'params': [p for n, p in model.named_parameters() if not any(nd in n for nd in no_decay)], 'weight_decay': 0.01},
         {'params': [p for n, p in model.named_parameters() if any(nd in n for nd in no_decay)], 'weight_decay': 0.0}
     ]
-    optimizer = torch.optim.AdamW(optimizer_grouped_parameters, lr=8e-5)
+    optimizer = torch.optim.AdamW(optimizer_grouped_parameters, lr=lr)
     save_path = './bert_classifier.ckpt'
     epochs = 3
     min_loss = float('inf')
