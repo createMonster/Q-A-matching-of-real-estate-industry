@@ -29,7 +29,7 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 class Bert_Cnn(nn.Module):
     def __init__(self, model_name, max_seq_len, hidden_size, n_class, num_filters=1024, filter_sizes=[3, 4, 5]):
         super(Bert_Cnn, self).__init__()
-        self.bert = BertModel.from_pretrained(model_name, return_dict=True)
+        self.bert = AutoModel.from_pretrained(model_name, return_dict=True)
         # self.lstm = nn.LSTM(input_size=hidden_size, hidden_size=lstm_hidden, num_layers=num_layers, bidirectional=True, batch_first=True)
         self.cnn = nn.ModuleList(nn.Conv2d(1, num_filters, (k, hidden_size)) for k in filter_sizes)
         self.dropout = nn.Dropout(0.1)
@@ -50,7 +50,7 @@ class Bert_Cnn(nn.Module):
 class Bert_Fc(nn.Module):
     def __init__(self, model_name, max_seq_len, hidden_size, n_class):
         super(Bert_Fc, self).__init__()
-        self.bert = BertModel.from_pretrained(model_name, return_dict=True)
+        self.bert = AutoModel.from_pretrained(model_name, return_dict=True)
         self.maxpool = nn.MaxPool1d(max_seq_len)
         self.avgpool = nn.AvgPool1d(max_seq_len)
         self.linear1 = nn.Linear(3 * hidden_size, hidden_size) 
@@ -151,10 +151,10 @@ if __name__ == '__main__':
     max_seq_len = 128
     hidden_size = 1024
     n_class = 2
-    batch_size = 32
+    batch_size = 24
     lstm_hidden = 256
     num_layers = 2
-    model_name = 'bert-large-uncased'
+    model_name = 'albert-large-v2'
     lr = 1e-5
 
     train_data = pd.read_csv('./data/train.csv')
@@ -165,7 +165,7 @@ if __name__ == '__main__':
 
     train_x, val_x, train_y, val_y = train_test_split(train_data[feature_cols], train_data[label_cols], test_size=0.2, random_state=seed)
 
-    tokenizer = BertTokenizerFast.from_pretrained(model_name)
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
     train_encodings = tokenizer(train_x['query'].tolist(), train_x['reply'].tolist(),truncation=True, padding=True, max_length=max_seq_len)
     val_encodings = tokenizer(val_x['query'].tolist(), val_x['reply'].tolist(), truncation=True, padding=True, max_length=max_seq_len)
     test_encodings = tokenizer(test_data['query'].tolist(), test_data['reply'].tolist(), truncation=True, padding=True, max_length=max_seq_len)
