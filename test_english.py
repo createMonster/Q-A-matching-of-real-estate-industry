@@ -154,7 +154,7 @@ if __name__ == '__main__':
     batch_size = 24
     lstm_hidden = 256
     num_layers = 2
-    model_name = 'albert-large-v2'
+    model_name = 'roberta-base'
     lr = 1e-5
 
     train_data = pd.read_csv('./data/train.csv')
