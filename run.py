@@ -55,7 +55,7 @@ class Bert_Fc(nn.Module):
         self.avgpool = nn.AvgPool1d(max_seq_len)
         self.linear1 = nn.Linear(3 * hidden_size, hidden_size) 
         self.linear2 = nn.Linear(hidden_size, n_class) 
-        self.tanh = nn.Tanh()       
+        self.tanh = nn.Tanh()     
     def forward(self, x, mask, token_type_ids):
         bert_out = self.bert(x, attention_mask = mask, token_type_ids=token_type_ids)
         sentence_emb = bert_out.last_hidden_state[:, 0, :]

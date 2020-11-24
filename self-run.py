@@ -29,7 +29,7 @@ device = 'cuda' if torch.cuda.is_available() else 'cpu'
 class Bert_Cnn(nn.Module):
     def __init__(self, model_name, max_seq_len, hidden_size, n_class, num_filters=1024, filter_sizes=[3, 4, 5]):
         super(Bert_Cnn, self).__init__()
-        self.bert = AutoModel.from_pretrained(model_name, return_dict=True)
+        self.bert = BertModel.from_pretrained(model_name, return_dict=True)
         # self.lstm = nn.LSTM(input_size=hidden_size, hidden_size=lstm_hidden, num_layers=num_layers, bidirectional=True, batch_first=True)
         self.cnn = nn.ModuleList(nn.Conv2d(1, num_filters, (k, hidden_size)) for k in filter_sizes)
         self.dropout = nn.Dropout(0.1)
@@ -50,12 +50,14 @@ class Bert_Cnn(nn.Module):
 class Bert_Fc(nn.Module):
     def __init__(self, model_name, max_seq_len, hidden_size, n_class):
         super(Bert_Fc, self).__init__()
-        self.bert = AutoModel.from_pretrained(model_name, return_dict=True)
+        self.bert = BertModel.from_pretrained(model_name, return_dict=True)
         self.maxpool = nn.MaxPool1d(max_seq_len)
         self.avgpool = nn.AvgPool1d(max_seq_len)
-        self.linear1 = nn.Linear(3 * hidden_size, hidden_size) 
-        self.linear2 = nn.Linear(hidden_size, n_class) 
-        self.tanh = nn.Tanh()       
+        self.linear1 = nn.Linear(3 * hidden_size, hidden_size)
+        self.linear2 = nn.Linear(hidden_size, hidden_size)  
+        self.linear3 = nn.Linear(hidden_size, n_class) 
+        self.tanh = nn.Tanh()
+        self.relu = nn.Relu()  
     def forward(self, x, mask, token_type_ids):
         bert_out = self.bert(x, attention_mask = mask, token_type_ids=token_type_ids)
         sentence_emb = bert_out.last_hidden_state[:, 0, :]
@@ -63,8 +65,9 @@ class Bert_Fc(nn.Module):
         maxpool_out = self.maxpool(bert_out).squeeze(2)
         avgpool_out = self.avgpool(bert_out).squeeze(2)
         outputs = torch.cat((maxpool_out, avgpool_out, sentence_emb), 1)
-        outputs = self.tanh(self.linear1(outputs))
-        outputs = self.linear2(outputs)
+        outputs = self.relu(self.linear1(outputs))
+        outputs = self.relu(self.linear2(outputs))
+        outputs = self.linear3(outputs)
         return outputs
 
 class zyDataset(Dataset):
@@ -151,10 +154,10 @@ if __name__ == '__main__':
     max_seq_len = 128
     hidden_size = 1024
     n_class = 2
-    batch_size = 24
+    batch_size = 32
     lstm_hidden = 256
     num_layers = 2
-    model_name = 'bert-base-uncased'
+    model_name = 'hfl/chinese-roberta-wwm-ext-large'
     lr = 1e-5
 
     train_data = pd.read_csv('./data/train.csv')
@@ -165,7 +168,7 @@ if __name__ == '__main__':
 
     train_x, val_x, train_y, val_y = train_test_split(train_data[feature_cols], train_data[label_cols], test_size=0.2, random_state=seed)
 
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    tokenizer = BertTokenizerFast.from_pretrained(model_name)
     train_encodings = tokenizer(train_x['query'].tolist(), train_x['reply'].tolist(),truncation=True, padding=True, max_length=max_seq_len)
     val_encodings = tokenizer(val_x['query'].tolist(), val_x['reply'].tolist(), truncation=True, padding=True, max_length=max_seq_len)
     test_encodings = tokenizer(test_data['query'].tolist(), test_data['reply'].tolist(), truncation=True, padding=True, max_length=max_seq_len)
